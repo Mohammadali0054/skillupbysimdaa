@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  password   String
+  fullName   String?
+  role       String       @default("student") // 'student' or 'admin'
+  isActive     Boolean      @default(true) // to grant/revoke access
+  otp          String?      // Stores the generated OTP
+  otpExpiresAt DateTime?    // When the OTP expires
+  createdAt    DateTime     @default(now())
+  enrollments Enrollment[]
+  cartItems   CartItem[]
+  wishlist    WishlistItem[]
+  certificates Certificate[]
+}
+
+model Course {
+  id           Int       @id @default(autoincrement())
+  title        String
+  description  String
+  price        Float     @default(0.00)
+  discountedPrice Float?
+  discountEndsAt  DateTime?
+  thumbnailUrl String
+  category     String
+  instructor   String
+  isPublished  Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  lessons      Lesson[]
+  enrollments  Enrollment[]
+  cartItems    CartItem[]
+  wishlistedBy WishlistItem[]
+  certificates Certificate[]
+}
+
+model Lesson {
+  id            Int      @id @default(autoincrement())
+  courseId      Int
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title         String
+  videoUrl      String?
+  contentText   String?
+  orderIndex    Int
+  isFreePreview Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Enrollment {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  courseId   Int
+  pricePaid  Float    @default(0)
+  discount   Float    @default(0)
+  isActive   Boolean  @default(true)
+  enrolledAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model Coupon {
+  id             Int      @id @default(autoincrement())
+  code           String   @unique
+  discountPercent Int
+  maxUses        Int      @default(100)
+  usesCount      Int      @default(0)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+}
+
+model CartItem {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  courseId   Int
+  addedAt    DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model WishlistItem {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  courseId   Int
+  addedAt    DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model CareerOpportunity {
+  id           Int      @id @default(autoincrement())
+  title        String
+  type         String   // e.g., 'Full-time • Remote'
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  applications JobApplication[]
+}
+
+model Certificate {
+  id            String   @id @default(uuid())
+  certificateId String   @unique // The human-readable or custom ID (e.g., SMD-CERT-...)
+  userId        Int
+  courseId      Int
+  issuedAt      DateTime @default(now())
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId]) // One certificate per user per course
+}
+
+model InstructorApplication {
+  id           Int      @id @default(autoincrement())
+  name         String
+  age          Int
+  email        String
+  phoneNo      String
+  linkedinLink String?
+  githubLink   String?
+  resumePath   String   // URL or local path to the uploaded resume
+  status       String   @default("pending") // pending, reviewed, accepted, rejected
+  appliedAt    DateTime @default(now())
+}
+
+model JobApplication {
+  id           Int      @id @default(autoincrement())
+  jobId        Int
+  name         String
+  age          Int
+  email        String
+  phoneNo      String
+  linkedinLink String?
+  githubLink   String?
+  resumePath   String
+  status       String   @default("pending")
+  appliedAt    DateTime @default(now())
+
+  job          CareerOpportunity @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}

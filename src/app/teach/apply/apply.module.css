@@ -1,0 +1,99 @@
+.container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem;
+  background-color: #f7f9fa;
+}
+
+.formCard {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 600px;
+}
+
+.formCard h1 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  color: #1c1d1f;
+}
+
+.formCard p {
+  color: #6a6f73;
+  margin-bottom: 2rem;
+}
+
+.message {
+  padding: 1rem;
+  background-color: #e6f7e9;
+  color: #1e7e34;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error {
+  padding: 1rem;
+  background-color: #fbe9e7;
+  color: #d32f2f;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: #1c1d1f;
+  font-size: 0.9rem;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #1c1d1f;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #a435f0;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #a435f0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.submitBtn:hover {
+  background-color: #8710d8;
+}
+
+.submitBtn:disabled {
+  background-color: #d1d7dc;
+  cursor: not-allowed;
+}
